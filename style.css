@@ -30,9 +30,9 @@ body {
     font-size : 4rem;
     font-family: var(--font-header);
     color : transparent;
-    background : repeating-linear-gradient(60deg,green  15%   , orange 20% , white 25%);  
-    background-image : url("./background.jpg");  
-    background-size: contain;   
+    background : repeating-linear-gradient(80deg,green     ,blue  , orange 20% , white 25%);  
+    /* background-image : url("./background.jpg");   */
+    /* background-size: contain;    */
     -webkit-background-clip :text;
     background-clip: text;
    
