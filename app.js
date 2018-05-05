@@ -5,7 +5,9 @@ const resetBtn = document.querySelector(".button__reset")
 const sizeInput = document.querySelector(".button__size")
 const colorElt = document.querySelector(".button__color")
 
-function Menu(){
+const color_border =  "b1c9ce"
+
+function App(){
     this.grid = new Grid()
     this.grid.init()
     
@@ -17,7 +19,7 @@ function Menu(){
     })
     
     colorElt.addEventListener("change", event => {
-        console.log("color elt")
+       
         this.color = event.target.value == "color"
         this.initGrid()
     })
@@ -45,18 +47,21 @@ function Menu(){
 
 function Grid(n  = 16 , color = false , w = 690 ,h = 80 ){
     let nCell  =  n
-    let width = 690
-    margin = 1
+    let width = w
+    let height = window.innerHeight * 0.8
+    margin = 0
     border = 1
     let colors
     this.init = function(){
-         colors = new Color(color)
-
-        container.style.width = `${5+690+ 2* nCell *  (margin+ border)}px`
-        container.style.height =`${5+500+ 2* nCell * (margin+ border) }px`
+         colors = new Color(color)  
+        let widthCells = width - 2* nCell *  (margin+ border)
+        let heightCells = height - 2* nCell *  (margin+ border)
+        
+        container.style.width = `${width}px`
+        container.style.height =`${height}500`
         container.style.cssText += "display : flex  ; flex-wrap : wrap;"
-        this.heightCell = 500/nCell
-        this.widthCell = 690/nCell
+        this.heightCell = heightCells/nCell
+        this.widthCell = widthCells/nCell
         
      
         let i = 0
@@ -74,8 +79,16 @@ function Grid(n  = 16 , color = false , w = 690 ,h = 80 ){
     }
      
     this.handlerCell = function(event){
-          
-          event.target.style.background=  colors.get()
+        let cell = event.target
+          if (color && cell.dataset.color ){            
+             cell.style.background = colors.getDark(cell.dataset.color,getRGB(cell.style.background))
+             cell.dataset.color= parseInt(cell.dataset.color)+1
+          }
+          else {
+               cell.dataset.color = 1
+               cell.style.background=  colors.get()
+          }
+         
     }
 
     
@@ -86,18 +99,25 @@ function Grid(n  = 16 , color = false , w = 690 ,h = 80 ){
 
     
     this.createCell = function(){
-      cell = document.createElement("div")
-      console.log(this.heightCell,this.widthCell)
+      cell = document.createElement("div")      
       cell.style.height = `${this.heightCell}px`
       cell.style.width = `${this.widthCell}px`
-      cell.style.margin = "1px"
+      cell.style.margin = margin
       cell.style.background = "white"
-      cell.style.border = `${border}px solid black`
+      cell.style.border = `${border}px solid  #${color_border}`
      
       return cell
     }
 }
 
+function getRGB(color){
+    
+    rgb =/rgb\((?<r>\d+)\s?,\s?(?<g>\d+)\s?,\s?(?<b>\d+)\)/g
+     
+    result = rgb.exec(color)
+    
+    return result.groups
+}
 
 function Color(black){
      
@@ -111,13 +131,19 @@ function Color(black){
         return color
     }
 
+    this.getDark=function(id,colors){        
+       result = Object.keys(colors).map(c => { return   (id >= 12) ?  0 : colors[c]  - colors[c] / (12 - +id) } ).join(",")
+      
+       return `rgb(${result}`
+    }
+
     function randomValue () {
         return Math.round(Math.random() *255 )
     }
 }
  
 
-menu = new Menu()
+app = new App()
 
 
 
